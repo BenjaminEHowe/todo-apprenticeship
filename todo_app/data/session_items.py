@@ -1,8 +1,9 @@
 import flask
+import uuid
 
 _DEFAULT_ITEMS = [
-    { 'id': 1, 'status': 'Not Started', 'title': 'List saved todo items' },
-    { 'id': 2, 'status': 'Not Started', 'title': 'Allow new items to be added' }
+    { 'id': uuid.uuid4(), 'status': 'Not Started', 'title': 'List saved todo items' },
+    { 'id': uuid.uuid4(), 'status': 'Not Started', 'title': 'Allow new items to be added' }
 ]
 
 
@@ -42,10 +43,7 @@ def add_item(title):
     """
     items = get_items()
 
-    # Determine the ID for the item based on that of the previously added item
-    id = items[-1]['id'] + 1 if items else 0
-
-    item = { 'id': id, 'title': title, 'status': 'Not Started' }
+    item = { 'id': uuid.uuid4(), 'title': title, 'status': 'Not Started' }
 
     # Add the item to the list
     items.append(item)
