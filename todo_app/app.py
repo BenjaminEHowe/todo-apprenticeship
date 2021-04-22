@@ -1,5 +1,4 @@
 import flask
-from flask.globals import session
 import todo_app.data.session_items as session_items
 
 from todo_app.flask_config import Config
