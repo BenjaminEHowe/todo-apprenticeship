@@ -1,4 +1,4 @@
-from flask import session
+import flask
 
 _DEFAULT_ITEMS = [
     { 'id': 1, 'status': 'Not Started', 'title': 'List saved todo items' },
@@ -13,7 +13,7 @@ def get_items():
     Returns:
         list: The list of saved items.
     """
-    return session.get('items', _DEFAULT_ITEMS.copy())
+    return flask.session.get('items', _DEFAULT_ITEMS.copy())
 
 
 def get_item(id):
@@ -49,7 +49,7 @@ def add_item(title):
 
     # Add the item to the list
     items.append(item)
-    session['items'] = items
+    flask.session['items'] = items
 
     return item
 
@@ -64,6 +64,6 @@ def save_item(item):
     existing_items = get_items()
     updated_items = [item if item['id'] == existing_item['id'] else existing_item for existing_item in existing_items]
 
-    session['items'] = updated_items
+    flask.session['items'] = updated_items
 
     return item
