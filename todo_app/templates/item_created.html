@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}To-Do App{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Item "{{ item_title }}" successfully created</h2>
+      <p><span id="countdown"><a href="/">Return to the index page</a></span></p>
+      <script type="text/javascript">
+        function countdown() {
+          document.getElementById("countdown").innerHTML = `You will be redirected to the index page in ${seconds} seconds`;
+          seconds -= 1;
+          seconds < 0 ? window.location = "/" : window.setTimeout(countdown, 1000);
+        }
+        
+        let seconds = 5;
+        countdown();
+    </script>
+    </div>
+  </div>
+{% endblock %}
