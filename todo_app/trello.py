@@ -22,20 +22,28 @@ class Trello:
         toDoListId = next(lst['id'] for lst in self._lists if lst['name'] == 'To Do')
         self._create_card_on_list(toDoListId, title)
     
-    def get_items(self):
-        trelloItems = self._get_cards_on_board()
+    def get_all_items(self):
+        trelloCards = self._get_cards_on_board()
         items = []
-        for trelloItem in trelloItems:
-            item = {}
-            item['id'] = TRELLO_PREFIX + trelloItem['id']
-            item['list'] = next(lst['name'] for lst in self._lists if lst['id'] == TRELLO_PREFIX + trelloItem['idList'])
-            item['title'] = trelloItem['name']
-            items.append(item)
+        for card in trelloCards:
+            items.append(self._convert_trello_card_to_item(card))
+        return items
+    
+    def get_items(self, listId=None):
+        if not listId:
+            return self.get_all_items()
+        trelloCards = self._get_cards_in_list(listId)
+        items = []
+        for card in trelloCards:
+            items.append(self._convert_trello_card_to_item(card))
         return items
 
+    
+    def get_lists(self):
+        return self._lists
+
     def _create_card_on_list(self, listId, name):
-        if listId.startswith(TRELLO_PREFIX):
-            listId = listId[len(TRELLO_PREFIX):]
+        listId = self._remove_trello_prefix_if_exists(listId)
         url = 'https://api.trello.com/1/cards'
         query = {
             'key': self._key,
@@ -59,8 +67,22 @@ class Trello:
         r = requests.post(url, params=query)
         return r.json()
 
+    def _convert_trello_card_to_item(self, trelloCard):
+        item = {}
+        item['id'] = TRELLO_PREFIX + trelloCard['id']
+        item['list'] = next(lst['name'] for lst in self._lists if lst['id'] == TRELLO_PREFIX + trelloCard['idList'])
+        item['title'] = trelloCard['name']
+        return item
+
     def _get_cards_on_board(self):
         url = 'https://api.trello.com/1/boards/{}/cards'.format(self._boardId)
+        query = { 'key': self._key, 'token': self._token }
+        r = requests.get(url, params=query)
+        return r.json()
+
+    def _get_cards_in_list(self, listId):
+        listId = self._remove_trello_prefix_if_exists(listId)
+        url = 'https://api.trello.com/1/lists/{}/cards'.format(listId)
         query = { 'key': self._key, 'token': self._token }
         r = requests.get(url, params=query)
         return r.json()
@@ -77,4 +99,11 @@ class Trello:
         for listName in expectedLists:
             if not next((lst for lst in lists if lst['name'] == listName), None):
                 self._create_list(listName)
+    
+    def _remove_trello_prefix_if_exists(self, listId):
+        if listId.startswith(TRELLO_PREFIX):
+            listId = listId[len(TRELLO_PREFIX):]
+        return listId
 
+
+# TODO: create TrelloList and TrelloCard classes

@@ -7,25 +7,34 @@
     <p class="lead">Just another to-do app.</p>
   </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Items</h2>
+  {% for lst in lists %}
+    <div class="row">
+      <div class="col-md-12">
+        <h2>{{ lst['name'] }}</h2>
+      </div>
     </div>
-  </div>
-  {% for task in tasks %}
-    {% if loop.index0 % 3 == 0 %}
+    {% if not items[lst['id']] %}
       <div class="row">
-    {% endif %}
-    <div class="col-md-4">
-      <div class="card" style="margin-bottom:20px">
-        <div class="card-body">
-          {{ task['title'] }}
+        <div class="col-md-12">
+          <p>No items in list "{{ lst['name'] }}".</p>
         </div>
       </div>
-    </div>
-    {% if loop.index0 % 3 == 2 or loop.last %}
-      </div>
     {% endif %}
+    {% for item in items[lst['id']] %}
+      {% if loop.index0 % 3 == 0 %}
+        <div class="row">
+      {% endif %}
+      <div class="col-md-4">
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-body">
+            {{ item['title'] }}
+          </div>
+        </div>
+      </div>
+      {% if loop.index0 % 3 == 2 or loop.last %}
+        </div>
+      {% endif %}
+    {% endfor %}
   {% endfor %}
   <div class="row">
     <div class="col-md-12">
