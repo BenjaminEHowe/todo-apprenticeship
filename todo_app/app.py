@@ -1,21 +1,22 @@
 import flask
-import todo_app.data.session_items as session_items
 
-from todo_app.flask_config import Config
+from todo_app.config import FlaskConfig, TrelloConfig
+from todo_app.trello import Trello
 
 app = flask.Flask(__name__)
-app.config.from_object(Config)
+app.config.from_object(FlaskConfig)
 
+trello = Trello(TrelloConfig.KEY, TrelloConfig.TOKEN, TrelloConfig.BOARD_ID) # pylint: disable=no-member
 
 @app.route('/')
 def index():
-    return flask.render_template('index.html', tasks = session_items.get_items())
+    return flask.render_template('index.html', tasks = trello.get_items())
 
 
 @app.route('/items', methods=['POST'])
 def add_task():
     title = flask.escape(flask.request.form['title'])
-    session_items.add_item(title)
+    trello.add_item(title)
     return flask.render_template('item_created.html', item_title = title), 201
 
 
