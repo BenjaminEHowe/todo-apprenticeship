@@ -10,24 +10,25 @@
   {% for lst in lists %}
     <div class="row">
       <div class="col-md-12">
-        <h2>{{ lst['name'] }}</h2>
+        <h2>{{ lst.name }}</h2>
       </div>
     </div>
-    {% if not items[lst['id']] %}
+    {% set items = lst.items %}
+    {% if not items %}
       <div class="row">
         <div class="col-md-12">
-          <p>No items in list "{{ lst['name'] }}".</p>
+          <p>No items in list "{{ lst.name }}".</p>
         </div>
       </div>
     {% endif %}
-    {% for item in items[lst['id']] %}
+    {% for item in items %}
       {% if loop.index0 % 3 == 0 %}
         <div class="row">
       {% endif %}
       <div class="col-md-4">
         <div class="card" style="margin-bottom:20px">
           <div class="card-body">
-            {{ item['title'] }}
+            {{ item.title }}
           </div>
         </div>
       </div>

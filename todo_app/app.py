@@ -10,11 +10,7 @@ trello = Trello(TrelloConfig.KEY, TrelloConfig.TOKEN, TrelloConfig.BOARD_ID) # p
 
 @app.route('/')
 def index():
-    lists = trello.get_lists()
-    items = {}
-    for lst in lists:
-        items[lst['id']] = trello.get_items(lst['id'])
-    return flask.render_template('index.html', lists = lists, items = items)
+    return flask.render_template('index.html', lists = trello.get_lists())
 
 
 @app.route('/items', methods=['POST'])

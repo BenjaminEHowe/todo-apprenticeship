@@ -13,29 +13,17 @@ class Trello:
         self._populate_board_with_lists()
         trelloLists = self._get_lists_on_board()
         for trelloList in trelloLists:
-            lst = {}
-            lst['id'] = TRELLO_PREFIX + trelloList['id']
-            lst['name'] = trelloList['name']
-            self._lists.append(lst)
+            self._lists.append(TrelloList.from_trello(self, trelloList))
 
     def add_item(self, title):
-        toDoListId = next(lst['id'] for lst in self._lists if lst['name'] == 'To Do')
+        toDoListId = next(lst.id for lst in self._lists if lst.name == 'To Do')
         self._create_card_on_list(toDoListId, title)
     
-    def get_all_items(self):
-        trelloCards = self._get_cards_on_board()
-        items = []
-        for card in trelloCards:
-            items.append(self._convert_trello_card_to_item(card))
-        return items
-    
-    def get_items(self, listId=None):
-        if not listId:
-            return self.get_all_items()
+    def get_items(self, listId):
         trelloCards = self._get_cards_in_list(listId)
         items = []
         for card in trelloCards:
-            items.append(self._convert_trello_card_to_item(card))
+            items.append(TrelloCard.from_trello(card))
         return items
 
     
@@ -66,13 +54,6 @@ class Trello:
         }
         r = requests.post(url, params=query)
         return r.json()
-
-    def _convert_trello_card_to_item(self, trelloCard):
-        item = {}
-        item['id'] = TRELLO_PREFIX + trelloCard['id']
-        item['list'] = next(lst['name'] for lst in self._lists if lst['id'] == TRELLO_PREFIX + trelloCard['idList'])
-        item['title'] = trelloCard['name']
-        return item
 
     def _get_cards_on_board(self):
         url = 'https://api.trello.com/1/boards/{}/cards'.format(self._boardId)
@@ -106,4 +87,47 @@ class Trello:
         return listId
 
 
-# TODO: create TrelloList and TrelloCard classes
+class TrelloCard:
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def listId(self):
+        return self._listId
+
+    @property
+    def title(self):
+        return self._title
+    
+    def __init__(self, id, listId, title):
+        self._id = TRELLO_PREFIX + id,
+        self._listId = TRELLO_PREFIX + listId,
+        self._title = title
+    
+    @staticmethod
+    def from_trello(trelloData):
+        return TrelloCard(trelloData['id'], trelloData['idList'], trelloData['name'])
+
+
+class TrelloList:
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def items(self):
+        return self._trello.get_items(self._id)
+    
+    @property
+    def name(self):
+        return self._name
+    
+    def __init__(self, trello, id, name):
+        self._trello = trello
+        self._id = TRELLO_PREFIX + id
+        self._name = name
+
+    @staticmethod
+    def from_trello(trello, trelloData):
+        return TrelloList(trello, trelloData['id'], trelloData['name'])
