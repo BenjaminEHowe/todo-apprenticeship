@@ -1,4 +1,5 @@
 import requests
+from dataclasses import dataclass
 
 
 TRELLO_PREFIX = 'trello_'
@@ -11,35 +12,43 @@ def remove_trello_prefix_if_exists(id):
 
 
 class Trello:
-    def __init__(self, key, token, boardId):
-        self._key = key
-        self._token = token
-        self._boardId = boardId
-        self._lists = []
+    def __init__(self, config):
+        self._key = config.KEY
+        self._token = config.TOKEN
+        self._boardId = config.BOARD_ID
         self._populate_board_with_lists()
-        trelloLists = self._get_lists_on_board()
-        for trelloList in trelloLists:
-            self._lists.append(TrelloList.from_trello(self, trelloList))
 
     def add_item(self, title):
-        toDoListId = next(lst.id for lst in self._lists if lst.name == 'To Do')
+        toDoListId = next(lst.id for lst in self.get_lists() if lst.name == 'To Do')
         self._create_card_on_list(toDoListId, title)
 
     def get_item(self, itemId):
         itemId = remove_trello_prefix_if_exists(itemId)
         return TrelloCard.from_trello(self._get_card(itemId))
-
     
     def get_items(self, listId):
         trelloCards = self._get_cards_in_list(listId)
         items = []
         for card in trelloCards:
             items.append(TrelloCard.from_trello(card))
-        return items
-
+        return tuple(items)
     
     def get_lists(self):
-        return self._lists
+        lists = []
+        trelloLists = self._get_lists_on_board()
+        for trelloList in trelloLists:
+            lists.append(TrelloList.from_trello(trelloList))
+        return tuple(lists)
+
+    def get_lists_with_cards(self):
+        lists = self.get_lists()
+        cards = []
+        for card in self._get_cards_on_board():
+            cards.append(TrelloCard.from_trello(card))
+        listsWithCards = []
+        for list_ in lists:
+            listsWithCards.append(list_.add_cards(tuple([card for card in cards if card.listId == list_.id])))
+        return tuple(listsWithCards)
     
     def update_item(self, itemId, updatedFields):
         itemId = remove_trello_prefix_if_exists(itemId)
@@ -51,7 +60,6 @@ class Trello:
             trelloUpdatedFields['name'] = updatedFields['title']
         if 'listId' in updatedFields:
             trelloUpdatedFields['idList'] = remove_trello_prefix_if_exists(updatedFields['listId'])
-        print(trelloUpdatedFields)
         self._update_card(itemId, trelloUpdatedFields)
 
     def _create_card_on_list(self, listId, name):
@@ -113,60 +121,35 @@ class Trello:
     
     def _update_card(self, cardId, trelloUpdatedFields):
         url = f'https://api.trello.com/1/cards/{cardId}'
-        print(url)
         query = { 'key': self._key, 'token': self._token }
-        print({**query, **trelloUpdatedFields})
         r = requests.put(url, params={**query, **trelloUpdatedFields})
         return r.json()
 
 
+@dataclass(frozen=True)
 class TrelloCard:
-    @property
-    def id(self):
-        return self._id
-
-    @property
-    def listId(self):
-        return self._listId
-
-    @property
-    def title(self):
-        return self._title
+    id: str
+    listId: str
+    title: str
     
-    def __init__(self, id, listId, title):
-        self._id = TRELLO_PREFIX + id
-        self._listId = TRELLO_PREFIX + listId
-        self._title = title
-    
-    @staticmethod
-    def from_trello(trelloData):
-        return TrelloCard(trelloData['id'], trelloData['idList'], trelloData['name'])
-    
-    def __repr__(self):
-        return f'TrelloCard({self.id}, {self.listId}, {self.title})'
+    @classmethod
+    def from_trello(cls, trelloData):
+        return cls(trelloData['id'], trelloData['idList'], trelloData['name'])
 
 
+@dataclass(frozen=True)
 class TrelloList:
-    @property
-    def id(self):
-        return self._id
+    id: str
+    name: str
+    
+    @classmethod
+    def from_trello(cls, trelloData):
+        return cls(trelloData['id'], trelloData['name'])
+    
+    def add_cards(self, cards: tuple):
+        return TrelloListWithCards(self.id, self.name, cards)
+    
 
-    @property
-    def items(self):
-        return self._trello.get_items(self.id)
-    
-    @property
-    def name(self):
-        return self._name
-    
-    def __init__(self, trello, id, name):
-        self._trello = trello
-        self._id = TRELLO_PREFIX + id
-        self._name = name
-
-    @staticmethod
-    def from_trello(trello, trelloData):
-        return TrelloList(trello, trelloData['id'], trelloData['name'])
-    
-    def __repr__(self):
-        return f'TrelloList({self.id}, {self.name}, {self.items})'
+@dataclass(frozen=True)
+class TrelloListWithCards(TrelloList):
+    items: tuple

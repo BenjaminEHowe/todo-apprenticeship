@@ -6,11 +6,11 @@ from todo_app.trello import Trello
 app = flask.Flask(__name__)
 app.config.from_object(FlaskConfig)
 
-trello = Trello(TrelloConfig.KEY, TrelloConfig.TOKEN, TrelloConfig.BOARD_ID) # pylint: disable=no-member
+trello = Trello(TrelloConfig)
 
 @app.route('/')
 def index():
-    return flask.render_template('index.html', lists = trello.get_lists())
+    return flask.render_template('index.html', lists = trello.get_lists_with_cards())
 
 
 @app.route('/items/<id>/edit', methods=['GET'])
