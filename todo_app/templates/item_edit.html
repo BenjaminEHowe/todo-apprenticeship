@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}Editing {{ item.title }}{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Editing {{ item.title }}</h2>
+      <form action="/items" id="editForm">
+        <input type="hidden" name="id" id="id" value="{{ item.id }}">
+        <label for="title">Title: </label>
+        <input type="text" name="title" id="title" placeholder="{{ item.title }}">
+        <br>
+        <label for="listId">List: </label>
+        <select name="listId" id="listId">
+          {% for lst in lists %}
+            <option value="{{ lst.id }}"{% if item.listId == lst.id %} selected{% endif %}>{{ lst.name }}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Edit">
+      </form>
+    </div>
+  </div>
+  <script>
+    let form = document.getElementById('editForm');
+    form.onsubmit = function(e) {
+      e.preventDefault();
+      console.log("Hello!");
+      changes = {};
+      if (document.getElementById('title').value) {
+        changes.title = document.getElementById('title').value;
+      }
+      if (document.getElementById('listId').value != '{{ item.listId }}') {
+        changes.listId = document.getElementById('listId').value;
+      }
+      let promises = [];
+      if (Object.keys(changes).length) {
+        promises.push(fetch('/items/{{ item.id }}', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(changes)
+        }));
+      }
+      Promise.all(promises).then(() => {
+        window.location.href = '/';
+      })
+    }
+  </script>
+{% endblock %}
