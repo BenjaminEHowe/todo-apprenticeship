@@ -25,7 +25,6 @@
     let form = document.getElementById('editForm');
     form.onsubmit = function(e) {
       e.preventDefault();
-      console.log("Hello!");
       changes = {};
       if (document.getElementById('title').value) {
         changes.title = document.getElementById('title').value;
