@@ -1,5 +1,7 @@
 import flask
 
+import models
+
 from todo_app.config import FlaskConfig, TrelloConfig
 from todo_app.trello import Trello
 
@@ -10,7 +12,7 @@ trello = Trello(TrelloConfig)
 
 @app.route('/')
 def index():
-    return flask.render_template('index.html', lists = trello.get_lists_with_cards())
+    return flask.render_template('index.html', model=models.ViewModel(lists=trello.get_lists_with_cards()))
 
 
 @app.route('/items/<id>/edit', methods=['GET'])
