@@ -19,7 +19,6 @@ class Trello:
         self._key = config.KEY
         self._token = config.TOKEN
         self._boardId = config.BOARD_ID
-        self._populate_board_with_lists()
 
     def add_item(self, title):
         toDoListId = next(lst.id for lst in self.get_lists() if lst.name == constants.LIST_NAME_TODO)
@@ -37,6 +36,7 @@ class Trello:
         return tuple(items)
     
     def get_lists(self):
+        self._populate_board_with_lists()
         lists = []
         trelloLists = self._get_lists_on_board()
         for trelloList in trelloLists:
