@@ -56,4 +56,9 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
 
 ## Testing
 
-To run the tests, run `poetry run pytest`.
+To run the unit and integrations tests, run `poetry run pytest`.
+
+To run the end to end tests:
+- [Install Firefox](https://www.mozilla.org/en-GB/firefox/new/)
+- Download [geckodriver](https://github.com/mozilla/geckodriver/releases) (selecting the correct build for your OS / CPU architecture) and place it in the "bin" directory with the name "geckodriver"
+- Run `poetry run pytest e2e_tests`

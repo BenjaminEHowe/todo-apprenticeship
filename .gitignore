@@ -118,3 +118,10 @@ env/
 
 ### Configuration files ###
 .env
+
+### Binary Files (e.g. webdrivers) ###
+bin/*
+!bin/README.md
+
+### Webdriver log file(s) ###
+geckodriver.log
