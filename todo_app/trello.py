@@ -1,5 +1,8 @@
+from typing import Tuple
 import requests
 from dataclasses import dataclass
+
+import todo_app.constants as constants
 
 
 TRELLO_PREFIX = 'trello_'
@@ -16,10 +19,9 @@ class Trello:
         self._key = config.KEY
         self._token = config.TOKEN
         self._boardId = config.BOARD_ID
-        self._populate_board_with_lists()
 
     def add_item(self, title):
-        toDoListId = next(lst.id for lst in self.get_lists() if lst.name == 'To Do')
+        toDoListId = next(lst.id for lst in self.get_lists() if lst.name == constants.LIST_NAME_TODO)
         self._create_card_on_list(toDoListId, title)
 
     def get_item(self, itemId):
@@ -34,6 +36,7 @@ class Trello:
         return tuple(items)
     
     def get_lists(self):
+        self._populate_board_with_lists()
         lists = []
         trelloLists = self._get_lists_on_board()
         for trelloList in trelloLists:
@@ -114,7 +117,7 @@ class Trello:
 
     def _populate_board_with_lists(self):
         lists = self._get_lists_on_board()
-        expectedLists = ('To Do', 'In Progress', 'Done')
+        expectedLists = (constants.LIST_NAME_TODO, constants.LIST_NAME_INPROGRESS, constants.LIST_NAME_DONE)
         for listName in expectedLists:
             if not next((lst for lst in lists if lst['name'] == listName), None):
                 self._create_list(listName)
@@ -152,4 +155,4 @@ class TrelloList:
 
 @dataclass(frozen=True)
 class TrelloListWithCards(TrelloList):
-    items: tuple
+    items: Tuple[TrelloCard, ...]
