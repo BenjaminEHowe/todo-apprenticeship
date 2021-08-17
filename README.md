@@ -56,7 +56,7 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
 
 ## Testing
 
-To run the unit and integrations tests, run `poetry run pytest`.
+To run the unit and integrations tests, run `poetry run pytest tests`.
 
 To run the end to end tests:
 - [Install Firefox](https://www.mozilla.org/en-GB/firefox/new/)
