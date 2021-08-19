@@ -62,3 +62,5 @@ To run the end to end tests:
 - [Install Firefox](https://www.mozilla.org/en-GB/firefox/new/)
 - Download [geckodriver](https://github.com/mozilla/geckodriver/releases) (selecting the correct build for your OS / CPU architecture) and place it in the "bin" directory with the name "geckodriver"
 - Run `poetry run pytest tests_e2e`
+
+(note that the end to end tests requre valid `TRELLO_KEY` and `TRELLO_TOKEN` values to be set in the `.env` file, althought the value of `TRELLO_BOARD_ID` is ignored)
