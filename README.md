@@ -15,7 +15,7 @@ The `.env` file is used by flask to set environment variables when running `flas
 
 ## Using Vagrant
 
-Install the latest versions of [Vagrant](https://www.vagrantup.com/downloads) and [VirtualBox](https://www.virtualbox.org/), and then run `vagrant up` in the project directory. The initial set-up process will take a few minutes, and then the application will run on [`http://localhost:5000/`](http://localhost:5000/).
+Install the latest versions of [Vagrant](https://www.vagrantup.com/downloads) and [VirtualBox](https://www.virtualbox.org/), and then run `vagrant up` in the project directory. The initial set-up process will take a few minutes, and then the application will run on [`http://localhost:5000/`](http://localhost:5000/). The application logs can be found in `.vagrant/log.txt`.
 
 ## Native installation
 
