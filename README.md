@@ -1,30 +1,8 @@
 # DevOps Apprenticeship: Project Exercise
 
-## System Requirements
+The project can be run using [Vagrant](https://www.vagrantup.com/) or natively.
 
-The project uses poetry for Python to create an isolated environment and manage package dependencies. To prepare your system, ensure you have an official distribution of Python version 3.7+ and install poetry using one of the following commands (as instructed by the [poetry documentation](https://python-poetry.org/docs/#system-requirements)):
-
-### Poetry installation (Bash)
-
-```bash
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-```
-
-### Poetry installation (PowerShell)
-
-```powershell
-(Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py -UseBasicParsing).Content | python
-```
-
-## Dependencies
-
-The project uses a virtual environment to isolate package dependencies. To create the virtual environment and install required packages, run the following from your preferred shell:
-
-```bash
-$ poetry install
-```
-
-You'll also need to clone a new `.env` file from the `.env.template` to store local configuration options. This is a one-time operation on first setup:
+Regardless, you'll need to create a new `.env` file from the `.env.template` to store local configuration options. This is a one-time operation on first setup:
 
 ```bash
 $ cp .env.template .env  # (first time only)
@@ -35,7 +13,37 @@ The `.env` file is used by flask to set environment variables when running `flas
 - `TRELLO_KEY` and `TRELLO_TOKEN`: Trello API credentials which can be obtained from the [Trello Developer API keys page](https://trello.com/app-key).
 - `TRELLO_BOARD_ID`: the ID of the Trello board to use for the tasks.
 
-## Running the App
+## Using Vagrant
+
+Install the latest versions of [Vagrant](https://www.vagrantup.com/downloads) and [VirtualBox](https://www.virtualbox.org/), and then run `vagrant up` in the project directory. The initial set-up process will take a few minutes, and then the application will run on [`http://localhost:5000/`](http://localhost:5000/).
+
+## Native installation
+
+### System Requirements
+
+The project uses poetry for Python to create an isolated environment and manage package dependencies. To prepare your system, ensure you have an official distribution of Python version 3.7+ and install poetry using one of the following commands (as instructed by the [poetry documentation](https://python-poetry.org/docs/#system-requirements)):
+
+#### Poetry installation (Bash)
+
+```bash
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+```
+
+#### Poetry installation (PowerShell)
+
+```powershell
+(Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py -UseBasicParsing).Content | python
+```
+
+### Dependencies
+
+The project uses a virtual environment to isolate package dependencies. To create the virtual environment and install required packages, run the following from your preferred shell:
+
+```bash
+$ poetry install
+```
+
+### Running the App
 
 Once the all dependencies have been installed, start the Flask app in development mode within the poetry environment by running:
 ```bash

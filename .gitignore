@@ -125,3 +125,6 @@ bin/*
 
 ### Webdriver log file(s) ###
 geckodriver.log
+
+### Vagrant ###
+.vagrant
