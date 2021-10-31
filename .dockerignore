@@ -1,0 +1,9 @@
+.env
+.env.template
+.venv
+.gitignore
+Dockerfile*
+README.md
+tests
+tests_e2e
+Vagrantfile
