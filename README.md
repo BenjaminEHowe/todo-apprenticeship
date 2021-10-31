@@ -1,6 +1,6 @@
 # DevOps Apprenticeship: Project Exercise
 
-The project can be run using [Vagrant](https://www.vagrantup.com/) or natively.
+The project can be run using [Docker](https://www.docker.com/), [Vagrant](https://www.vagrantup.com/), or natively.
 
 Regardless, you'll need to create a new `.env` file from the `.env.template` to store local configuration options. This is a one-time operation on first setup:
 
@@ -12,6 +12,16 @@ The `.env` file is used by flask to set environment variables when running `flas
 - [`SECRET_KEY`](https://flask.palletsprojects.com/en/1.1.x/config/#SECRET_KEY): used to encrypt the flask session cookie.
 - `TRELLO_KEY` and `TRELLO_TOKEN`: Trello API credentials which can be obtained from the [Trello Developer API keys page](https://trello.com/app-key).
 - `TRELLO_BOARD_ID`: the ID of the Trello board to use for the tasks.
+
+## Using Docker
+
+_Note that the below instructions do not work when using Windows CMD, although they will work when using PowerShell_
+
+Install the latest version of [Docker](https://docs.docker.com/engine/install/), and then:
+- To build the image in development mode: `docker build --target development --tag todo-app:dev .`
+- To run the image in development mode: `docker run --env-file ./.env -p 5000:5000 --mount type=bind,source="$(pwd)",target=/todo-apprenticeship todo-app:dev`
+- To build the image in production mode: `docker build --target production --tag todo-app:prod .`
+- To run the image in production mode: `docker run --env-file ./.env -p 5000:5000 --mount type=bind,source="$(pwd)",target=/todo-apprenticeship todo-app:prod`
 
 ## Using Vagrant
 
