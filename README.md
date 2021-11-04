@@ -74,11 +74,21 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
 
 ## Testing
 
+### Running Tests in Docker
+
+- To build the test image: `docker build --target test --tag todo-app:test .`
+- To run the unit tests: `docker run todo-app:test --env-file=.env.test tests/unit`
+- To run the unit tests: `docker run todo-app:test --env-file=.env.test tests/integration`
+- To run the E2E tests using Chromium: `docker run --env-file .env todo-app:test tests/e2e_chromium`
+- ~~To run the E2E tests using Gecko / Firefox: `docker run --env-file .env todo-app:test tests/e2e_gecko` _(note that this does not support ARM)_~~ _not yet supported, see [issue 14](https://github.com/BenjaminEHowe/todo-apprenticeship/issues/14)
+
+### Running Tests Locally
+
 To run the unit and integrations tests, run `poetry run pytest tests`.
 
-To run the end to end tests:
+To run the end to end tests using Gecko / Firefox:
 - [Install Firefox](https://www.mozilla.org/en-GB/firefox/new/)
 - Download [geckodriver](https://github.com/mozilla/geckodriver/releases) (selecting the correct build for your OS / CPU architecture) and place it in the "bin" directory with the name "geckodriver"
-- Run `poetry run pytest tests_e2e`
+- Run `poetry run pytest tests/e2e_gecko`
 
 (note that the end to end tests requre valid `TRELLO_KEY` and `TRELLO_TOKEN` values to be set in the `.env` file, althought the value of `TRELLO_BOARD_ID` is ignored)
