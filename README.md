@@ -80,7 +80,7 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
 - To run the unit tests: `docker run todo-app:test --env-file=.env.test tests/unit`
 - To run the unit tests: `docker run todo-app:test --env-file=.env.test tests/integration`
 - To run the E2E tests using Chromium: `docker run --env-file .env todo-app:test tests/e2e_chromium`
-- ~~To run the E2E tests using Gecko / Firefox: `docker run --env-file .env todo-app:test tests/e2e_gecko` _(note that this does not support ARM)_~~ _not yet supported, see [issue 14](https://github.com/BenjaminEHowe/todo-apprenticeship/issues/14)
+- ~~To run the E2E tests using Gecko / Firefox: `docker run --env-file .env todo-app:test tests/e2e_gecko` _(note that this does not support ARM)_~~ not yet supported, see [issue 14](https://github.com/BenjaminEHowe/todo-apprenticeship/issues/14)
 
 ### Running Tests Locally
 
